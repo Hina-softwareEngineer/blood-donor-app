@@ -13,6 +13,11 @@ import {
 } from 'native-base';
 import {ValidationFields} from '../../middleware/Validation';
 import {connect} from 'react-redux';
+import {signInUser} from '../../middleware/queries/signin';
+import {
+  loginSignupError,
+  loginSignupUser,
+} from '../../redux/actions/authActions';
 
 function Login({navigation, user, loginUser}) {
   let [email, setEmail] = React.useState(null);
@@ -21,13 +26,9 @@ function Login({navigation, user, loginUser}) {
   let [emailErr, setEmailErr] = React.useState(null);
   let [passErr, setPassErr] = React.useState(null);
 
-  // console.log('props login--->', user);
-
-  const onSubmitForm = () => {
-    // console.log(email, password);
+  const onSubmitForm = async () => {
     if (email && password) {
       let validate = ValidationFields(email, password);
-      // console.log(validate);
       let validationResult = validate.every((field, ind) => {
         if (field !== true) {
           if (ind == 1) {
@@ -46,7 +47,19 @@ function Login({navigation, user, loginUser}) {
       });
 
       if (validationResult) {
-        console.log(email, password);
+        let response = await signInUser(email, password);
+        console.log('response --getting', response);
+        if (typeof response !== 'string') {
+          loginSignupUser(response);
+          // navigation.navigate('');
+        } else {
+          loginSignupError(response);
+          Toast.show({
+            text: response,
+            position: 'bottom',
+            type: 'danger',
+          });
+        }
       }
     } else {
       Toast.show({
@@ -78,6 +91,7 @@ function Login({navigation, user, loginUser}) {
             </Button>
           </Form>
           <Text>Not a User yet? </Text>
+
           <Button primary onPress={() => navigation.navigate('Signup')}>
             <Text>Signup Now</Text>
           </Button>
@@ -87,13 +101,5 @@ function Login({navigation, user, loginUser}) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  user: state.userState,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  loginUser: (data) => dispatch(loginUser(data)),
-});
-
-let LoginScreen = connect(mapStateToProps, mapDispatchToProps)(Login);
+let LoginScreen = connect(null, {loginSignupError, loginSignupUser})(Login);
 export {LoginScreen};

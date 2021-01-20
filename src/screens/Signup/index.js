@@ -13,8 +13,13 @@ import {
 } from 'native-base';
 import {ValidationFields} from '../../middleware/Validation';
 import {signUpUser} from '../../middleware/queries/signup';
+import {
+  loginSignupError,
+  loginSignupUser,
+} from '../../redux/actions/authActions';
+import {connect} from 'react-redux';
 
-export function SignUpScreen({navigation}) {
+function SignUpScr({navigation, loginSignupUser, loginSignupError}) {
   let [username, setUsername] = React.useState(null);
   let [email, setEmail] = React.useState(null);
   let [password, setPassword] = React.useState(null);
@@ -24,8 +29,7 @@ export function SignUpScreen({navigation}) {
   let [passErr, setPassErr] = React.useState(null);
   let [PhoneErr, setPhoneErr] = React.useState(null);
 
-  const onSubmitForm = () => {
-    console.log(username, email, password, phone_number);
+  const onSubmitForm = async () => {
     if (username && email && password && phone_number) {
       let validate = ValidationFields(email, password, username, phone_number);
       let validationResult = validate.every((field, ind) => {
@@ -54,13 +58,29 @@ export function SignUpScreen({navigation}) {
       });
 
       if (validationResult) {
-        console.log('submitted', username, email, password, phone_number);
-        console.log(signUpUser(email, password));
+        let response = await signUpUser(
+          email,
+          password,
+          phone_number,
+          username,
+        );
+        console.log('response --getting', response);
+        if (typeof response !== 'string') {
+          loginSignupUser(response);
+          // navigation.navigate('');
+        } else {
+          loginSignupError(response);
+          Toast.show({
+            text: response,
+            position: 'bottom',
+            type: 'danger',
+          });
+        }
       }
     } else {
       Toast.show({
         text: 'Fill all the fields first!',
-        position: 'top',
+        position: 'bottom',
         type: 'danger',
       });
     }
@@ -105,3 +125,8 @@ export function SignUpScreen({navigation}) {
     </Root>
   );
 }
+
+let SignUpScreen = connect(null, {loginSignupError, loginSignupUser})(
+  SignUpScr,
+);
+export {SignUpScreen};

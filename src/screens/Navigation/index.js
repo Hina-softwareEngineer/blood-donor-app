@@ -5,12 +5,23 @@ import {connect} from 'react-redux';
 
 import {LoginScreen} from '../Login';
 import {SignUpScreen} from '../Signup';
+import {loadingUser} from '../../middleware/queries/loadingUser';
+import {loadingUserState, logoutUser} from '../../redux/actions/authActions';
 
 const Stack = createStackNavigator();
 
-function Navigation({user, loadUser}) {
+function Navigation({user, loadingUserState, logoutUser}) {
+  console.log('user data-->', user);
   React.useEffect(() => {
-    // loadUser();
+    async function userData() {
+      let response = await loadingUser();
+      if (response) {
+        loadingUserState(response);
+      } else {
+        logoutUser();
+      }
+    }
+    userData();
   }, []);
 
   return (
@@ -36,4 +47,6 @@ const mapStateToProps = (state) => ({
   user: state.userState,
 });
 
-export default connect(mapStateToProps, null)(Navigation);
+export default connect(mapStateToProps, {loadingUserState, logoutUser})(
+  Navigation,
+);

@@ -4,12 +4,10 @@ import {
   USER_LOGOUT_SUCCESS,
   USER_LOADING,
 } from '../types/types';
-import {getObject, getString} from '../../middleware/AsyncStorage';
 
 const initialState = {
   isLoaded: false,
   isAuthenticated: false,
-  token: null,
   user: null,
   error: null,
 };
@@ -22,8 +20,7 @@ export const authReducer = (state = initialState, action) => {
         ...state,
         isLoaded: true,
         isAuthenticated: true,
-        token: action.payload.token,
-        user: action.payload.user,
+        user: action.payload,
         error: null,
       };
     case USER_LOGIN_FAILED:
@@ -31,16 +28,14 @@ export const authReducer = (state = initialState, action) => {
         ...state,
         isLoaded: true,
         isAuthenticated: false,
-        token: null,
         user: null,
-        error: action.payload.message,
+        error: action.payload,
       };
     case USER_LOGOUT_SUCCESS:
       return {
         ...state,
         isLoaded: false,
         isAuthenticated: false,
-        token: null,
         user: null,
         error: null,
       };

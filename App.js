@@ -23,6 +23,7 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import {Root} from 'native-base';
 import Navigation from './src/screens/Navigation';
 
 import {Provider} from 'react-redux';
@@ -30,9 +31,11 @@ import {store} from './src/redux/store';
 
 const App: () => React$Node = () => {
   return (
-    <Provider store={store}>
-      <Navigation />
-    </Provider>
+    <Root>
+      <Provider store={store}>
+        <Navigation />
+      </Provider>
+    </Root>
   );
 };
 
