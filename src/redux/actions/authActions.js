@@ -4,12 +4,7 @@ import {
   USER_LOGOUT_SUCCESS,
   USER_LOADING,
 } from '../types/types';
-// import {
-//   storeObject,
-//   storeString,
-//   getObject,
-//   getString,
-// } from '../../middlewares/AsyncStorage/index';
+
 import {signUpUser} from '../../middleware/queries/signup';
 
 const LOCALHOST = 'http://192.168.1.171:5000';
