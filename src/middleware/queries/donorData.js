@@ -1,19 +1,22 @@
 import database from '@react-native-firebase/database';
 
 export const addDonorData = async (data) => {
-  const newRef = await database().ref('/donor').push();
-  let response = newRef
-    .set({
-      ...data,
-      _id: newRef.key,
-    })
-    .then((res) => {
-      console.log('res, Success');
-    })
-    .catch((e) => console.log('fail'));
+  if (data) {
+    const newRef = await database().ref('/donor').push();
+    let response = newRef
+      .set({
+        ...data,
+        _id: newRef.key,
+      })
+      .then((res) => {
+        console.log('res, Success');
+      })
+      .catch((e) => console.log('fail'));
 
-  console.log('response in daata-->', response);
-  return response;
+    console.log('response in daata-->', response);
+    return response;
+  }
+  return 'false';
 };
 
 export const updateDonorData = async (id, data) => {
