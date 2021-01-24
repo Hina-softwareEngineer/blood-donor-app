@@ -1,18 +1,15 @@
-import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 
 export const signUpUser = async (email, password, phone, userName) => {
-  let data = {
-    userName,
-    email,
-    phone,
-    isAvailable: false,
-  };
-
   let response = await auth()
     .createUserWithEmailAndPassword(email, password)
     .then(async (res) => {
-      console.log('res -->', res.user);
+      let data = {
+        userName,
+        email,
+        phone,
+      };
 
       await database()
         .ref(`/users/${res.user.uid}`)

@@ -11,6 +11,7 @@ import {
   Toast,
   Root,
 } from 'native-base';
+import {Keyboard} from 'react-native';
 import {ValidationFields} from '../../middleware/Validation';
 import {connect} from 'react-redux';
 import {signInUser} from '../../middleware/queries/signin';
@@ -27,6 +28,7 @@ function Login({navigation, user, loginUser}) {
   let [passErr, setPassErr] = React.useState(null);
 
   const onSubmitForm = async () => {
+    Keyboard.dismiss();
     if (email && password) {
       let validate = ValidationFields(email, password);
       let validationResult = validate.every((field, ind) => {
@@ -51,7 +53,7 @@ function Login({navigation, user, loginUser}) {
         console.log('response --getting', response);
         if (typeof response !== 'string') {
           loginSignupUser(response);
-          // navigation.navigate('');
+          navigation.navigate('donorsList');
         } else {
           loginSignupError(response);
           Toast.show({

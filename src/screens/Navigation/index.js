@@ -1,16 +1,23 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from '@react-navigation/stack';
 import {connect} from 'react-redux';
 
 import {LoginScreen} from '../Login';
 import {SignUpScreen} from '../Signup';
+import {BloodUserDetails} from '../DonorDetail';
 import {loadingUser} from '../../middleware/queries/loadingUser';
 import {loadingUserState, logoutUser} from '../../redux/actions/authActions';
+import {DonorsList} from '../DonorList';
+
+import {bottomNavStateChange} from '../../redux/actions/navActions';
 
 const Stack = createStackNavigator();
 
-function Navigation({user, loadingUserState, logoutUser}) {
+function Navigation({user, navState, loadingUserState, logoutUser}) {
   console.log('user data-->', user);
   React.useEffect(() => {
     async function userData() {
@@ -22,31 +29,56 @@ function Navigation({user, loadingUserState, logoutUser}) {
       }
     }
     userData();
+
+    if (navState == 2) {
+      bottomNavStateChange(0);
+    }
   }, []);
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          title: 'Blood Group Management',
-          headerStyle: {
-            backgroundColor: '#0277bd',
-          },
-          headerTintColor: '#fff',
-        }}>
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Signup" component={SignUpScreen} />
-        {/* <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Chat" component={ChatScreen} /> */}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            title: 'Blood Group Management',
+            headerStyle: {
+              backgroundColor: '#0277bd',
+            },
+            headerTintColor: '#fff',
+          }}>
+          {user.isAuthenticated && user.isLoaded ? (
+            <>
+              <Stack.Screen name="donorsList" component={DonorsList} />
+              <Stack.Screen
+                name="donorProfile"
+                options={{
+                  headerLeft: null,
+                  cardStyleInterpolator:
+                    CardStyleInterpolators.forHorizontalIOS,
+                }}
+                component={BloodUserDetails}
+              />
+            </>
+          ) : null}
+          {!user.isAuthenticated || !user.isLoaded ? (
+            <>
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="Signup" component={SignUpScreen} />
+            </>
+          ) : null}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
   );
 }
 
 const mapStateToProps = (state) => ({
   user: state.userState,
+  navState: state.navState.active,
 });
 
-export default connect(mapStateToProps, {loadingUserState, logoutUser})(
-  Navigation,
-);
+export default connect(mapStateToProps, {
+  loadingUserState,
+  logoutUser,
+  bottomNavStateChange,
+})(Navigation);

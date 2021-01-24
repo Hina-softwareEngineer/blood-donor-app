@@ -11,6 +11,7 @@ import {
   Toast,
   Root,
 } from 'native-base';
+import {Keyboard} from 'react-native';
 import {ValidationFields} from '../../middleware/Validation';
 import {signUpUser} from '../../middleware/queries/signup';
 import {
@@ -30,6 +31,7 @@ function SignUpScr({navigation, loginSignupUser, loginSignupError}) {
   let [PhoneErr, setPhoneErr] = React.useState(null);
 
   const onSubmitForm = async () => {
+    Keyboard.dismiss();
     if (username && email && password && phone_number) {
       let validate = ValidationFields(email, password, username, phone_number);
       let validationResult = validate.every((field, ind) => {
@@ -65,9 +67,9 @@ function SignUpScr({navigation, loginSignupUser, loginSignupError}) {
           username,
         );
         console.log('response --getting', response);
-        if (typeof response !== 'string') {
+        if (typeof response !== 'string' && response) {
           loginSignupUser(response);
-          // navigation.navigate('');
+          navigation.navigate('donorsList');
         } else {
           loginSignupError(response);
           Toast.show({
