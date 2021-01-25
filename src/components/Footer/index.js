@@ -43,10 +43,11 @@ function FooterNavigation({navState, bottomNavStateChange, logoutUser}) {
         <Button
           active={navState === 2}
           vertical
-          onPress={() => {
+          onPress={async () => {
+            await logoutUser();
+            await logoutSignInUser();
             bottomNavStateChange(2);
-            logoutSignInUser();
-            logoutUser();
+            await navigation.navigate('Login');
           }}>
           <Icon name="navigate" />
           <Text>Logout</Text>

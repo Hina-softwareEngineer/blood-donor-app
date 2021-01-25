@@ -19,12 +19,14 @@ import {
   CheckBox,
   Body,
 } from 'native-base';
+import {Keyboard} from 'react-native';
 import ToggleSwitch from 'toggle-switch-react-native';
 import {connect} from 'react-redux';
 import {FooterNav} from '../../components/Footer';
 import {
   addDonorData,
   getUserMedicalData,
+  updateDonorData,
 } from '../../middleware/queries/donorData';
 
 export function BloodUserDetailsComp({user}) {
@@ -36,39 +38,74 @@ export function BloodUserDetailsComp({user}) {
   let [rh_factor, setRhFactor] = React.useState('pos');
   let [medical, setMedical] = React.useState(null);
 
+  let [userProfileId, setUserProfileId] = React.useState(null);
+
   React.useEffect(() => {
-    // addDonorData();
-    // updateDonorData();
-    // console.log('user Id ---->', user.uid);
     async function subFunction() {
-      await getUserMedicalData(user.uid);
+      let userProfileid = await getUserMedicalData(user.uid);
+      if (
+        userProfileid &&
+        typeof userProfileid === 'object' &&
+        Object.keys(userProfileid).length > 0
+      ) {
+        let id = Object.keys(userProfileid)[0];
+        setAddress(userProfileid[id]['address']);
+        setBloodGroup(userProfileid[id]['bloodGroup']);
+        setRhFactor(userProfileid[id]['rhValue']);
+        if (userProfileid[id]['diseases'][0] !== 'none') {
+          setDiseases(userProfileid[id]['diseases']);
+        }
+        setHomePhone(userProfileid[id]['homePhone']);
+        setAvailable(userProfileid[id]['isAvailable']);
+        setMedical(userProfileid[id]['medicalDetails']);
+        setUserProfileId(id);
+      }
     }
     subFunction();
   }, []);
 
   const onSubmitForm = async () => {
+    Keyboard.dismiss();
     if (address && home_phone && blood_group && rh_factor && medical) {
-      console.log(
-        available,
-        address,
-        home_phone,
-        diseases,
-        blood_group,
-        rh_factor,
-        medical,
-      );
-      let data = {
-        userId: user.uid,
-        isAvailable: available,
-        address,
-        homePhone: home_phone,
-        diseases: diseases.length == 0 ? ['none'] : diseases,
-        bloodGroup: blood_group,
-        rhValue: rh_factor,
-        medicalDetails: medical,
-      };
-      let response = await addDonorData(data);
-      console.log('response in details ', response);
+      if (diseases.length > 0 && available) {
+        Toast.show({
+          text: "If you have any disease, then you can't give blood.",
+          position: 'center',
+          type: 'warning',
+          duration: 3000,
+        });
+      } else {
+        let data = {
+          userId: user.uid,
+          isAvailable: available,
+          address,
+          homePhone: home_phone,
+          diseases: diseases.length == 0 ? ['none'] : diseases,
+          bloodGroup: blood_group,
+          rhValue: rh_factor,
+          medicalDetails: medical,
+        };
+        if (userProfileId) {
+          let response = await updateDonorData(userProfileId, data);
+          if (response) {
+            Toast.show({
+              text: 'Successfully Updated.',
+              position: 'top',
+              type: 'success',
+            });
+          }
+        } else {
+          let response = await addDonorData(data);
+          console.log(response);
+          if (response) {
+            Toast.show({
+              text: 'Successfully Saved.',
+              position: 'top',
+              type: 'success',
+            });
+          }
+        }
+      }
     } else {
       Toast.show({
         text: 'Fill all the necessage fields first!',
@@ -93,19 +130,24 @@ export function BloodUserDetailsComp({user}) {
               labelStyle={{color: 'black', fontWeight: '900'}}
               size="small"
               onToggle={(isOn) => {
-                console.log(isOn);
                 setAvailable(isOn);
               }}
             />
 
             <Item regular>
               <Label>Address</Label>
-              <Input onChangeText={(value) => setAddress(value)} />
+              <Input
+                value={address}
+                onChangeText={(value) => setAddress(value)}
+              />
             </Item>
 
             <Item regular>
               <Label>House Phone Number</Label>
-              <Input onChangeText={(value) => setHomePhone(value)} />
+              <Input
+                value={home_phone}
+                onChangeText={(value) => setHomePhone(value)}
+              />
             </Item>
 
             <Label>Have any one of the below Disease:</Label>
@@ -238,6 +280,7 @@ export function BloodUserDetailsComp({user}) {
             <Item>
               <Label>Other Medical Details</Label>
               <Textarea
+                value={medical}
                 rowSpan={5}
                 bordered
                 placeholder="Textarea"

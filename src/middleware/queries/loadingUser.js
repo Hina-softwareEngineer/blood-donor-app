@@ -19,6 +19,6 @@ export const logoutSignInUser = async () => {
       console.log('Successfully Logout');
     })
     .catch((e) => {
-      throw new Error('Unable to logout.');
+      console.log('Unable to logout.');
     });
 };

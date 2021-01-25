@@ -17,15 +17,20 @@ import {bottomNavStateChange} from '../../redux/actions/navActions';
 
 const Stack = createStackNavigator();
 
-function Navigation({user, navState, loadingUserState, logoutUser}) {
-  console.log('user data-->', user);
+function Navigation({
+  user,
+  navState,
+  loadingUserState,
+  logoutUser,
+  bottomNavStateChange,
+}) {
   React.useEffect(() => {
     async function userData() {
       let response = await loadingUser();
       if (response) {
-        loadingUserState(response);
+        await loadingUserState(response);
       } else {
-        logoutUser();
+        await logoutUser();
       }
     }
     userData();
@@ -46,6 +51,12 @@ function Navigation({user, navState, loadingUserState, logoutUser}) {
             },
             headerTintColor: '#fff',
           }}>
+          {!user.isAuthenticated ? (
+            <>
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="Signup" component={SignUpScreen} />
+            </>
+          ) : null}
           {user.isAuthenticated && user.isLoaded ? (
             <>
               <Stack.Screen name="donorsList" component={DonorsList} />
@@ -58,12 +69,6 @@ function Navigation({user, navState, loadingUserState, logoutUser}) {
                 }}
                 component={BloodUserDetails}
               />
-            </>
-          ) : null}
-          {!user.isAuthenticated || !user.isLoaded ? (
-            <>
-              <Stack.Screen name="Login" component={LoginScreen} />
-              <Stack.Screen name="Signup" component={SignUpScreen} />
             </>
           ) : null}
         </Stack.Navigator>

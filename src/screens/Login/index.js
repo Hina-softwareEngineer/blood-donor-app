@@ -20,7 +20,7 @@ import {
   loginSignupUser,
 } from '../../redux/actions/authActions';
 
-function Login({navigation, user, loginUser}) {
+function Login({navigation, loginSignupError, loginSignupUser}) {
   let [email, setEmail] = React.useState(null);
   let [password, setPassword] = React.useState(null);
 
@@ -50,9 +50,8 @@ function Login({navigation, user, loginUser}) {
 
       if (validationResult) {
         let response = await signInUser(email, password);
-        console.log('response --getting', response);
         if (typeof response !== 'string') {
-          loginSignupUser(response);
+          await loginSignupUser(response);
           navigation.navigate('donorsList');
         } else {
           loginSignupError(response);

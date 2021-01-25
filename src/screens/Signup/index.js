@@ -68,7 +68,7 @@ function SignUpScr({navigation, loginSignupUser, loginSignupError}) {
         );
         console.log('response --getting', response);
         if (typeof response !== 'string' && response) {
-          loginSignupUser(response);
+          await loginSignupUser(response);
           navigation.navigate('donorsList');
         } else {
           loginSignupError(response);
