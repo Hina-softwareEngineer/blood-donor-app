@@ -11,7 +11,7 @@ import {
   Toast,
   Root,
 } from 'native-base';
-import {Keyboard} from 'react-native';
+import {Keyboard, View, Image, StyleSheet} from 'react-native';
 import {ValidationFields} from '../../middleware/Validation';
 import {signUpUser} from '../../middleware/queries/signup';
 import {
@@ -91,42 +91,150 @@ function SignUpScr({navigation, loginSignupUser, loginSignupError}) {
   return (
     <Root>
       <Container>
-        <Content>
-          <Form>
-            <Item floatingLabel>
-              <Label>Username</Label>
-              <Input onChangeText={(value) => setUsername(value)} />
+        <Content
+          style={{
+            paddingHorizontal: 20,
+            marginTop: 40,
+          }}>
+          <Text style={styles.heading1}>Create An Account</Text>
+
+          <Form style={{marginTop: 20}}>
+            <Item floatingLabel last style={styles.input}>
+              <Label style={styles.labelFloat}>Username</Label>
+              <Input
+                style={{
+                  color: '#1a1a1a',
+                }}
+                onChangeText={(value) => setUsername(value)}
+              />
             </Item>
-            {userErr && <Label>{userErr}</Label>}
-            <Item floatingLabel last>
-              <Label>Email</Label>
-              <Input onChangeText={(value) => setEmail(value)} />
+            {userErr && <Label style={styles.error}>*{userErr}</Label>}
+            <Item floatingLabel last style={styles.input}>
+              <Label style={styles.labelFloat}>Email</Label>
+              <Input
+                style={{
+                  color: '#1a1a1a',
+                }}
+                onChangeText={(value) => setEmail(value)}
+              />
             </Item>
-            {emailErr && <Label>{emailErr}</Label>}
-            <Item floatingLabel>
-              <Label>Password</Label>
-              <Input onChangeText={(value) => setPassword(value)} />
+            {emailErr && <Label style={styles.error}>*{emailErr}</Label>}
+            <Item floatingLabel last style={styles.input}>
+              <Label style={styles.labelFloat}>Password</Label>
+              <Input
+                style={{
+                  color: '#1a1a1a',
+                }}
+                secureTextEntry={true}
+                onChangeText={(value) => setPassword(value)}
+              />
             </Item>
-            {passErr && <Label>{passErr}</Label>}
-            <Item floatingLabel>
-              <Label>Phone Number</Label>
-              <Input onChangeText={(value) => setPhoneNumber(value)} />
+            {passErr && <Label style={styles.error}>*{passErr}</Label>}
+            <Item floatingLabel last style={styles.input}>
+              <Label style={styles.labelFloat}>Phone Number</Label>
+              <Input
+                style={{
+                  color: '#1a1a1a',
+                }}
+                onChangeText={(value) => setPhoneNumber(value)}
+              />
             </Item>
-            {PhoneErr && <Label>{PhoneErr}</Label>}
-            <Button primary onPress={onSubmitForm}>
-              <Text>Submit</Text>
+            {PhoneErr && <Label style={styles.error}>*{PhoneErr}</Label>}
+            <Button style={styles.loginBtn} onPress={onSubmitForm}>
+              <Text>Continue</Text>
             </Button>
+            <Text style={styles.terms}>
+              By clicking continue you will proceed.
+            </Text>
           </Form>
 
-          <Text>Already a User? </Text>
-          <Button onPress={() => navigation.navigate('Login')}>
-            <Text>Login Now</Text>
-          </Button>
+          <View style={styles.signupScr}>
+            <Text style={styles.notAccount}>Already a User?</Text>
+
+            <Button
+              style={styles.singup}
+              onPress={() => navigation.navigate('Login')}>
+              <Text uppercase={false} style={styles.textSignup}>
+                Login now
+              </Text>
+            </Button>
+          </View>
         </Content>
       </Container>
     </Root>
   );
 }
+
+const styles = StyleSheet.create({
+  heading1: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#1a1a1a',
+    margin: 0,
+  },
+  labelFloat: {
+    top: 7,
+    left: -10,
+  },
+  input: {
+    borderColor: '#de2c2c',
+    borderStyle: 'solid',
+    borderBottomWidth: 2.5,
+    paddingTop: 5,
+    paddingLeft: 5,
+    marginBottom: 2,
+    marginTop: 5,
+  },
+  error: {
+    marginBottom: 0,
+    color: '#de2c2c',
+    fontSize: 14,
+  },
+
+  loginBtn: {
+    marginTop: 50,
+    marginBottom: 5,
+    width: '100%',
+    backgroundColor: '#de2c2c',
+    justifyContent: 'center',
+    borderRadius: 3,
+  },
+  signupScr: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  notAccount: {
+    fontSize: 13,
+    color: '#767676',
+  },
+  singup: {
+    backgroundColor: 'transparent',
+    shadowColor: 'transparent',
+    shadowOffset: {
+      height: 0,
+      width: 0,
+    },
+    shadowOpacity: 0,
+    elevation: 0,
+    padding: 0,
+    paddingLeft: 5,
+  },
+  textSignup: {
+    fontSize: 13,
+    paddingTop: -1,
+    paddingLeft: 2,
+    color: '#de2c2c',
+    fontWeight: 'bold',
+  },
+  terms: {
+    fontSize: 12,
+    color: '#767676',
+    textAlign: 'center',
+  },
+});
 
 let SignUpScreen = connect(null, {loginSignupError, loginSignupUser})(
   SignUpScr,

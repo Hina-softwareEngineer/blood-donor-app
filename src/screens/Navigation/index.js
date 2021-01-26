@@ -53,8 +53,20 @@ function Navigation({
           }}>
           {!user.isAuthenticated ? (
             <>
-              <Stack.Screen name="Login" component={LoginScreen} />
-              <Stack.Screen name="Signup" component={SignUpScreen} />
+              <Stack.Screen
+                name="Login"
+                options={{
+                  headerShown: false,
+                }}
+                component={LoginScreen}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                }}
+                name="Signup"
+                component={SignUpScreen}
+              />
             </>
           ) : null}
           {user.isAuthenticated && user.isLoaded ? (

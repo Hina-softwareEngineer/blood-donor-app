@@ -11,7 +11,7 @@ import {
   Toast,
   Root,
 } from 'native-base';
-import {Keyboard} from 'react-native';
+import {Keyboard, View, Image, StyleSheet} from 'react-native';
 import {ValidationFields} from '../../middleware/Validation';
 import {connect} from 'react-redux';
 import {signInUser} from '../../middleware/queries/signin';
@@ -74,33 +74,139 @@ function Login({navigation, loginSignupError, loginSignupUser}) {
   return (
     <Root>
       <Container>
-        <Content>
+        <View style={styles.navbar}>
+          <Image
+            style={styles.logo}
+            source={require('../../Images/logo.png')}
+          />
+          <Text style={styles.logoText}>DOBOR</Text>
+        </View>
+        <Content style={{paddingHorizontal: 20}}>
+          <Text style={styles.heading1}>Welcome Back!</Text>
           <Form>
-            <Item floatingLabel last>
-              <Label>Email</Label>
-              <Input onChangeText={(value) => setEmail(value)} />
+            <Item floatingLabel last style={styles.input}>
+              <Label style={styles.labelFloat}>Email</Label>
+              <Input
+                value={email}
+                style={{
+                  color: '#1a1a1a',
+                }}
+                onChangeText={(value) => setEmail(value)}
+              />
             </Item>
-            {emailErr && <Label>{emailErr}</Label>}
-            <Item floatingLabel>
-              <Label>Password</Label>
-              <Input onChangeText={(value) => setPassword(value)} />
+            {emailErr && <Label style={styles.error}>*{emailErr}</Label>}
+            <Item floatingLabel last style={styles.input}>
+              <Label style={styles.labelFloat}>Password</Label>
+              <Input
+                style={{
+                  color: '#1a1a1a',
+                }}
+                secureTextEntry={true}
+                value={password}
+                onChangeText={(value) => setPassword(value)}
+              />
             </Item>
-            {passErr && <Label>{passErr}</Label>}
+            {passErr && <Label style={styles.error}>*{passErr}</Label>}
 
-            <Button primary onPress={onSubmitForm}>
+            <Button style={styles.loginBtn} primary onPress={onSubmitForm}>
               <Text>Login</Text>
             </Button>
           </Form>
-          <Text>Not a User yet? </Text>
+          <View style={styles.signupScr}>
+            <Text style={styles.notAccount}>Don't have an account yet? </Text>
 
-          <Button primary onPress={() => navigation.navigate('Signup')}>
-            <Text>Signup Now</Text>
-          </Button>
+            <Button
+              style={styles.singup}
+              onPress={() => navigation.navigate('Signup')}>
+              <Text uppercase={false} style={styles.textSignup}>
+                Signup Now
+              </Text>
+            </Button>
+          </View>
         </Content>
       </Container>
     </Root>
   );
 }
+
+const styles = StyleSheet.create({
+  navbar: {
+    marginTop: 40,
+    marginBottom: 30,
+    paddingHorizontal: 13,
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  logo: {
+    width: 40,
+    height: 40,
+    resizeMode: 'contain',
+  },
+  logoText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#c62e23',
+  },
+  heading1: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#1a1a1a',
+  },
+  labelFloat: {
+    top: 7,
+    left: -10,
+  },
+  input: {
+    borderColor: '#de2c2c',
+    borderStyle: 'solid',
+    borderBottomWidth: 2.5,
+    paddingTop: 5,
+    paddingLeft: 5,
+    marginBottom: 2,
+  },
+  error: {
+    marginBottom: 0,
+    color: '#de2c2c',
+    fontSize: 14,
+  },
+
+  loginBtn: {
+    marginVertical: 50,
+    width: '100%',
+    backgroundColor: '#de2c2c',
+    justifyContent: 'center',
+    borderRadius: 3,
+  },
+  signupScr: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  notAccount: {
+    fontSize: 13,
+    color: '#767676',
+  },
+  singup: {
+    backgroundColor: 'transparent',
+    shadowColor: 'transparent',
+    shadowOffset: {
+      height: 0,
+      width: 0,
+    },
+    shadowOpacity: 0,
+    elevation: 0,
+    padding: 0,
+  },
+  textSignup: {
+    fontSize: 13,
+    paddingTop: 1,
+    paddingLeft: 2,
+    color: '#de2c2c',
+    fontWeight: 'bold',
+  },
+});
 
 let LoginScreen = connect(null, {loginSignupError, loginSignupUser})(Login);
 export {LoginScreen};
