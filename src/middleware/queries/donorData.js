@@ -31,15 +31,17 @@ export const updateDonorData = async (id, data) => {
 };
 
 export const getUserMedicalData = async (userId) => {
-  let response = await database()
-    .ref(`/donor`)
-    .orderByChild('userId')
-    .equalTo(userId)
-    .once('value')
-    .then((res) => res.val())
-    .catch((err) => err);
-
-  return response;
+  if (userId) {
+    let response = await database()
+      .ref(`/donor`)
+      .orderByChild('userId')
+      .equalTo(userId)
+      .once('value')
+      .then((res) => res.val())
+      .catch((err) => err);
+    return response;
+  }
+  return null;
 };
 
 export const getAllDonors = async () => {
@@ -70,4 +72,20 @@ export const getAllDonors = async () => {
     .catch((err) => err);
 
   return response;
+};
+
+export const getUser = async (userId) => {
+  if (userId) {
+    let user = await database()
+      .ref('/users')
+      .orderByKey()
+      .equalTo(userId)
+      .once('value')
+      .then((resp) => {
+        return resp.val();
+      });
+    return user;
+    console.log(user);
+  }
+  return null;
 };

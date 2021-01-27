@@ -35,7 +35,7 @@ function Navigation({
     }
     userData();
 
-    if (navState == 2) {
+    if (navState === 2) {
       bottomNavStateChange(0);
     }
   }, []);
@@ -45,9 +45,8 @@ function Navigation({
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
-            title: 'Blood Group Management',
             headerStyle: {
-              backgroundColor: '#0277bd',
+              backgroundColor: '#de2c2c',
             },
             headerTintColor: '#fff',
           }}>
@@ -71,7 +70,13 @@ function Navigation({
           ) : null}
           {user.isAuthenticated && user.isLoaded ? (
             <>
-              <Stack.Screen name="donorsList" component={DonorsList} />
+              <Stack.Screen
+                name="donorsList"
+                options={{
+                  title: 'Find Donors',
+                }}
+                component={DonorsList}
+              />
               <Stack.Screen
                 name="donorProfile"
                 options={{

@@ -19,7 +19,7 @@ import {
   CheckBox,
   Body,
 } from 'native-base';
-import {Keyboard} from 'react-native';
+import {Keyboard, StyleSheet} from 'react-native';
 import ToggleSwitch from 'toggle-switch-react-native';
 import {connect} from 'react-redux';
 import {FooterNav} from '../../components/Footer';
@@ -27,9 +27,10 @@ import {
   addDonorData,
   getUserMedicalData,
   updateDonorData,
+  getUser,
 } from '../../middleware/queries/donorData';
 
-export function BloodUserDetailsComp({user}) {
+export function BloodUserDetailsComp({user, navigation}) {
   let [available, setAvailable] = React.useState(false);
   let [address, setAddress] = React.useState(null);
   let [home_phone, setHomePhone] = React.useState(null);
@@ -39,10 +40,10 @@ export function BloodUserDetailsComp({user}) {
   let [medical, setMedical] = React.useState(null);
 
   let [userProfileId, setUserProfileId] = React.useState(null);
-
+  console.log('user--->', user);
   React.useEffect(() => {
     async function subFunction() {
-      let userProfileid = await getUserMedicalData(user.uid);
+      let userProfileid = await getUserMedicalData(user?.uid);
       if (
         userProfileid &&
         typeof userProfileid === 'object' &&
@@ -60,6 +61,9 @@ export function BloodUserDetailsComp({user}) {
         setMedical(userProfileid[id]['medicalDetails']);
         setUserProfileId(id);
       }
+      let userDetail = await getUser(user?.uid);
+      userDetail = userDetail[user?.uid];
+      navigation.setOptions({title: userDetail.userName});
     }
     subFunction();
   }, []);
@@ -118,40 +122,50 @@ export function BloodUserDetailsComp({user}) {
   return (
     <Root>
       <Container>
-        <Content>
-          <Form>
-            <Label>Fill up your Profile</Label>
-            <Label>Available for Donation of Blood</Label>
+        <Content style={styles.content}>
+          <Text style={styles.heading}>Profile</Text>
+          <Form style={{marginTop: 10}}>
             <ToggleSwitch
               isOn={available}
-              onColor="green"
-              offColor="red"
-              label="Example label"
-              labelStyle={{color: 'black', fontWeight: '900'}}
+              onColor="#de2c2c"
+              offColor="#767676"
+              label="Available for Donation of Blood "
+              labelStyle={{
+                color: '#1a1a1a',
+                fontSize: 16,
+                marginLeft: 0,
+                width: '83%',
+              }}
               size="small"
               onToggle={(isOn) => {
                 setAvailable(isOn);
               }}
             />
 
-            <Item regular>
-              <Label>Address</Label>
+            <Content style={(styles.input, {marginTop: 10})}>
+              <Label style={styles.label}>Address</Label>
               <Input
+                placeholder="Enter Address"
+                style={styles.inputBox}
                 value={address}
                 onChangeText={(value) => setAddress(value)}
               />
-            </Item>
+            </Content>
 
-            <Item regular>
-              <Label>House Phone Number</Label>
+            <Content style={styles.input}>
+              <Label style={styles.label}>Home Phone Number</Label>
               <Input
+                style={styles.inputBox}
+                placeholder="Enter Home Phone Number"
                 value={home_phone}
                 onChangeText={(value) => setHomePhone(value)}
               />
-            </Item>
+            </Content>
 
-            <Label>Have any one of the below Disease:</Label>
-            <Label>(If not, then leave it blank)</Label>
+            <Label style={styles.label}>
+              Have any one of the below Disease:
+            </Label>
+            <Label style={styles.label}>(If not, then leave it blank)</Label>
             <ListItem>
               <CheckBox
                 checked={diseases.includes('Malaria')}
@@ -277,7 +291,7 @@ export function BloodUserDetailsComp({user}) {
               </ListItem>
             </Content>
 
-            <Item>
+            <Container>
               <Label>Other Medical Details</Label>
               <Textarea
                 value={medical}
@@ -286,7 +300,7 @@ export function BloodUserDetailsComp({user}) {
                 placeholder="Textarea"
                 onChangeText={(val) => setMedical(val)}
               />
-            </Item>
+            </Container>
 
             <Button primary onPress={onSubmitForm}>
               <Text>Submit</Text>
@@ -298,6 +312,34 @@ export function BloodUserDetailsComp({user}) {
     </Root>
   );
 }
+
+const styles = StyleSheet.create({
+  content: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+  },
+  heading: {
+    letterSpacing: 0.8,
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  input: {
+    marginVertical: 10,
+    padding: 0,
+  },
+  label: {
+    fontSize: 12,
+    color: '#1a1a1a',
+    marginBottom: 3,
+  },
+  inputBox: {
+    height: 50,
+    borderRadius: 3,
+    color: '#1a1a1a',
+    borderColor: 'rgba(112,112,112,0.5)',
+    borderWidth: 1,
+  },
+});
 
 const mapStateToProps = (state) => ({
   user: state.userState.user,
