@@ -14,6 +14,7 @@ import {loadingUserState, logoutUser} from '../../redux/actions/authActions';
 import {DonorsList} from '../DonorList';
 
 import {bottomNavStateChange} from '../../redux/actions/navActions';
+import {SearchBtn} from '../search';
 
 const Stack = createStackNavigator();
 
@@ -34,8 +35,7 @@ function Navigation({
       }
     }
     userData();
-
-    if (navState === 2) {
+    if (navState === 2 || navState === 1) {
       bottomNavStateChange(0);
     }
   }, []);
@@ -86,6 +86,13 @@ function Navigation({
                 }}
                 component={BloodUserDetails}
               />
+              <Stack.Screen
+                name="Search"
+                options={{
+                  cardStyleInterpolator:
+                    CardStyleInterpolators.forFadeFromBottomAndroid,
+                }}
+                component={SearchBtn}></Stack.Screen>
             </>
           ) : null}
         </Stack.Navigator>

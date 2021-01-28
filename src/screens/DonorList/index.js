@@ -11,16 +11,28 @@ import {
   Left,
   Right,
   Label,
+  Picker,
 } from 'native-base';
-import {View, StyleSheet, TouchableOpacity, Modal} from 'react-native';
+import Icon from 'react-native-vector-icons/dist/FontAwesome5';
+import IconE from 'react-native-vector-icons/dist/Entypo';
+import IconM from 'react-native-vector-icons/dist/MaterialIcons';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
+  Keyboard,
+} from 'react-native';
 import {connect} from 'react-redux';
 import {FooterNav} from '../../components/Footer';
 import {getAllDonors} from '../../middleware/queries/donorData';
+import Navigation from '../Navigation';
 
-export function DonorsListComp({user}) {
+export function DonorsListComp({user, navigation}) {
   let [usersList, setUsersList] = React.useState([]);
   let [modalState, setModalState] = React.useState(false);
   let [oneUserData, setOneUserData] = React.useState(null);
+  let [search, setSearch] = React.useState(null);
   React.useEffect(() => {
     async function getDonorsData() {
       let response = await getAllDonors();
@@ -34,27 +46,55 @@ export function DonorsListComp({user}) {
   return (
     <>
       <Root>
-        <Container>
-          <Text>Donors List</Text>
-          {/* <Item regular>
-            <Input placeholder="Regular Textbox" />
-          </Item> */}
+        <Container style={{paddingHorizontal: 15}}>
+          <Item
+            style={styles.searchBox}
+            onPress={() => {
+              navigation.navigate('Search');
+            }}>
+            <Text style={{color: '#1a1a1a', fontSize: 14}}>
+              {search ? search : 'Search Blood Group'}
+            </Text>
+            <Right>
+              {search ? (
+                <IconE
+                  onPress={() => setSearch(null)}
+                  name="cross"
+                  style={{fontSize: 18, color: '#de2c2c'}}
+                />
+              ) : (
+                <IconM name="search" style={{fontSize: 18, color: '#de2c2c'}} />
+              )}
+            </Right>
+          </Item>
 
-          <Content>
+          <Content style={{marginTop: 10}}>
             <List>
               {usersList?.map((list, i) => (
                 <ListItem
+                  style={{marginLeft: 5}}
                   key={i}
                   onPress={() => {
                     setOneUserData(list);
                     setModalState(true);
                   }}>
-                  <Left>
-                    <Text>{list.userName}</Text>
+                  <Left style={{alignItems: 'center'}}>
+                    <Icon
+                      name="user-alt"
+                      style={{
+                        fontSize: 28,
+                        color: 'rgba(112,112,112,0.6)',
+                        marginRight: 10,
+                      }}
+                    />
+                    <Content>
+                      <Text style={styles.text}>{list.userName}</Text>
+                      <Text style={styles.email}>{list.email}</Text>
+                    </Content>
                   </Left>
 
                   <Right>
-                    <Text>
+                    <Text style={styles.bloodStyle}>
                       {list.bloodGroup}
                       {list.rhValue === 'neg' ? ' -' : ' +'}
                     </Text>
@@ -132,6 +172,33 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  searchBox: {
+    padding: 15,
+    marginTop: 10,
+    borderRadius: 50,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderColor: 'rgba(112,112,112,0.6)',
+  },
+  text: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#000',
+  },
+  bloodStyle: {
+    backgroundColor: '#f8f1f0',
+    color: '#de2c2c',
+    fontWeight: 'bold',
+    padding: 5,
+    fontSize: 15,
+  },
+  email: {
+    fontSize: 12,
+    color: '#1a1a1a',
+    alignContent: 'flex-end',
   },
 });
 
