@@ -108,33 +108,87 @@ export function DonorsListComp({user, navigation}) {
         <Modal animationType="fade" transparent visible={modalState}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text>{oneUserData?.userName}</Text>
-              <Text>{oneUserData?.email}</Text>
+              <Right style={styles.close}>
+                <TouchableOpacity
+                  style={{padding: 15}}
+                  onPress={() => {
+                    setModalState(false);
+                  }}>
+                  <Text>
+                    <IconM
+                      style={{
+                        fontSize: 20,
+                        color: '#de2c2c',
+                      }}
+                      name="close"
+                    />
+                  </Text>
+                </TouchableOpacity>
+              </Right>
+              <Text style={styles.title}>{oneUserData?.userName}</Text>
+              <Text style={styles.emailModal}>{oneUserData?.email}</Text>
 
-              <Label>Blood Group : </Label>
-              <Text>
-                {oneUserData?.bloodGroup}{' '}
-                {oneUserData?.rhValue === 'neg' ? '-' : '+'}
-              </Text>
+              <Item style={styles.itemModalBloodGroup}>
+                <Label style={styles.labels}>Blood Group </Label>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: '#de2c2c',
+                    fontWeight: 'bold',
+                  }}>
+                  {oneUserData?.bloodGroup}{' '}
+                  {oneUserData?.rhValue === 'neg' ? '-' : '+'}
+                </Text>
+              </Item>
 
-              <Label>Address</Label>
-              <Text>{oneUserData?.address}</Text>
+              <Item style={styles.itemModal}>
+                <Label style={styles.labelsMedical}>Address </Label>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    color: 'rgba(0,0,0,0.7)',
+                  }}>
+                  {oneUserData?.address}
+                </Text>
+              </Item>
 
-              <Label>Phone</Label>
-              <Text>{oneUserData?.phone}</Text>
+              <Item style={styles.itemModal}>
+                <Label style={styles.labels}>Phone </Label>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    color: 'rgba(0,0,0,0.7)',
+                  }}>
+                  {oneUserData?.phone}
+                </Text>
+              </Item>
 
-              <Label>Home Phone</Label>
-              <Text>{oneUserData?.homePhone}</Text>
+              <Item style={styles.itemModal}>
+                <Label style={styles.labels}>Home Phone </Label>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    color: 'rgba(0,0,0,0.7)',
+                  }}>
+                  {oneUserData?.homePhone}
+                </Text>
+              </Item>
 
-              <Label>Medical Details</Label>
-              <Text>{oneUserData?.medicalDetails}</Text>
-
-              <TouchableOpacity
-                onPress={() => {
-                  setModalState(false);
-                }}>
-                <Text>OK</Text>
-              </TouchableOpacity>
+              <Item style={styles.itemModal}>
+                <Label style={styles.labelsMedical}>Medical Details </Label>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    width: 175,
+                    color: 'rgba(0,0,0,0.7)',
+                  }}>
+                  {oneUserData?.medicalDetails} hellow this is the way
+                </Text>
+              </Item>
             </View>
           </View>
         </Modal>
@@ -158,12 +212,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalView: {
+    position: 'relative',
+    width: '85%',
     marginHorizontal: 10,
     marginVertical: 20,
     backgroundColor: 'white',
     borderRadius: 10,
     padding: 35,
-    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -172,6 +227,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  close: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    alignSelf: 'flex-end',
   },
   searchBox: {
     padding: 15,
@@ -199,6 +260,42 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#1a1a1a',
     alignContent: 'flex-end',
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'rgba(0,0,0,0.8)',
+    margin: 0,
+  },
+  emailModal: {
+    textAlign: 'center',
+    margin: 0,
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#767676',
+    lineHeight: 16,
+  },
+  itemModalBloodGroup: {
+    borderBottomWidth: 0,
+    marginLeft: 0,
+    marginVertical: 5,
+    marginTop: 25,
+  },
+  itemModal: {
+    borderBottomWidth: 0,
+    marginLeft: 0,
+    marginVertical: 5,
+  },
+  labels: {
+    width: 100,
+    fontSize: 12,
+  },
+  labelsMedical: {
+    width: 100,
+    fontSize: 12,
+    paddingTop: 1,
+    alignSelf: 'flex-start',
   },
 });
 
