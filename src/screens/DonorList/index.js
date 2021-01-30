@@ -26,22 +26,122 @@ import {
 import {connect} from 'react-redux';
 import {FooterNav} from '../../components/Footer';
 import {getAllDonors} from '../../middleware/queries/donorData';
-import Navigation from '../Navigation';
+import {changeSearchValue} from '../../redux/actions/searchActions';
+import {SpinnerLoader} from '../../components/Spinner';
 
-export function DonorsListComp({user, navigation}) {
+export function DonorsListComp({search, navigation, changeSearchValue}) {
   let [usersList, setUsersList] = React.useState([]);
   let [modalState, setModalState] = React.useState(false);
   let [oneUserData, setOneUserData] = React.useState(null);
-  let [search, setSearch] = React.useState(null);
+  let [searchedData, setSearchedData] = React.useState([]);
+  let [spinner, setSpinner] = React.useState(true);
+
   React.useEffect(() => {
     async function getDonorsData() {
       let response = await getAllDonors();
       if (response) {
         setUsersList(response);
+        setDataAccordingToSearchValue(response);
       }
+      setSpinner(false);
     }
     getDonorsData();
   }, []);
+
+  React.useEffect(() => {
+    setDataAccordingToSearchValue();
+  }, [search]);
+
+  function setDataAccordingToSearchValue(response) {
+    let filterData;
+    switch (search) {
+      case 'A+': {
+        filterData = usersList.filter((data) => {
+          if (data.bloodGroup === 'A' || data.bloodGroup === 'O') {
+            return data;
+          }
+        });
+        break;
+      }
+      case 'A-': {
+        filterData = usersList.filter((data) => {
+          if (
+            data.rhValue === 'neg' &&
+            (data.bloodGroup === 'O' || data.bloodGroup === 'A')
+          ) {
+            return data;
+          }
+        });
+        break;
+      }
+      case 'B+': {
+        filterData = usersList.filter((data) => {
+          if (data.bloodGroup === 'O' || data.bloodGroup === 'B') {
+            return data;
+          }
+        });
+        break;
+      }
+      case 'B-': {
+        filterData = usersList.filter((data) => {
+          if (
+            data.rhValue === 'neg' &&
+            (data.bloodGroup === 'O' || data.bloodGroup === 'B')
+          ) {
+            return data;
+          }
+        });
+        break;
+      }
+      case 'AB+': {
+        filterData = usersList.filter((data) => {
+          if (
+            data.bloodGroup === 'O' ||
+            data.bloodGroup === 'AB' ||
+            data.bloodGroup === 'A' ||
+            data.bloodGroup === 'B'
+          ) {
+            return data;
+          }
+        });
+        break;
+      }
+      case 'AB-': {
+        filterData = usersList.filter((data) => {
+          if (
+            data.rhValue === 'neg' &&
+            (data.bloodGroup === 'O' ||
+              data.bloodGroup === 'AB' ||
+              data.bloodGroup === 'A' ||
+              data.bloodGroup === 'B')
+          ) {
+            return data;
+          }
+        });
+        break;
+      }
+      case 'O+': {
+        filterData = usersList.filter((data) => {
+          if (data.bloodGroup === 'O') {
+            return data;
+          }
+        });
+        break;
+      }
+      case 'O-': {
+        filterData = usersList.filter((data) => {
+          if (data.rhValue === 'neg' && data.bloodGroup === 'O') {
+            return data;
+          }
+        });
+        break;
+      }
+      default: {
+        filterData = response || usersList;
+      }
+    }
+    setSearchedData(filterData);
+  }
 
   return (
     <>
@@ -50,17 +150,23 @@ export function DonorsListComp({user, navigation}) {
           <Item
             style={styles.searchBox}
             onPress={() => {
-              navigation.navigate('Search');
+              console.log(search);
+              if (!search) {
+                navigation.navigate('Search');
+              }
             }}>
             <Text style={{color: '#1a1a1a', fontSize: 14}}>
-              {search ? search : 'Search Blood Group'}
+              {search ? search : 'Select Patient Blood Group'}
             </Text>
             <Right>
               {search ? (
                 <IconE
-                  onPress={() => setSearch(null)}
+                  onPress={() => changeSearchValue(null)}
                   name="cross"
-                  style={{fontSize: 18, color: '#de2c2c'}}
+                  style={{
+                    fontSize: 18,
+                    color: '#de2c2c',
+                  }}
                 />
               ) : (
                 <IconM name="search" style={{fontSize: 18, color: '#de2c2c'}} />
@@ -68,41 +174,72 @@ export function DonorsListComp({user, navigation}) {
             </Right>
           </Item>
 
-          <Content style={{marginTop: 10}}>
-            <List>
-              {usersList?.map((list, i) => (
-                <ListItem
-                  style={{marginLeft: 5}}
-                  key={i}
-                  onPress={() => {
-                    setOneUserData(list);
-                    setModalState(true);
-                  }}>
-                  <Left style={{alignItems: 'center'}}>
-                    <Icon
-                      name="user-alt"
+          {spinner ? (
+            <SpinnerLoader />
+          ) : (
+            <Content style={{marginTop: 10}}>
+              <List>
+                {searchedData?.length < 1 ? (
+                  <ListItem
+                    style={{
+                      justifyContent: 'center',
+                    }}>
+                    <Text
                       style={{
-                        fontSize: 28,
-                        color: 'rgba(112,112,112,0.6)',
-                        marginRight: 10,
-                      }}
-                    />
-                    <Content>
-                      <Text style={styles.text}>{list.userName}</Text>
-                      <Text style={styles.email}>{list.email}</Text>
-                    </Content>
-                  </Left>
-
-                  <Right>
-                    <Text style={styles.bloodStyle}>
-                      {list.bloodGroup}
-                      {list.rhValue === 'neg' ? ' -' : ' +'}
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                      }}>
+                      Not found 😢 .
                     </Text>
-                  </Right>
-                </ListItem>
-              ))}
-            </List>
-          </Content>
+                  </ListItem>
+                ) : null}
+                {searchedData?.length > 0 && search ? (
+                  <Text
+                    style={{
+                      marginTop: 5,
+                      marginBottom: 0,
+                      fontSize: 15,
+                      fontWeight: 'bold',
+                      color: '#1a1a1a',
+                    }}>
+                    Recommended
+                  </Text>
+                ) : null}
+
+                {searchedData?.map((list, i) => (
+                  <ListItem
+                    style={{marginLeft: 5}}
+                    key={i}
+                    onPress={() => {
+                      setOneUserData(list);
+                      setModalState(true);
+                    }}>
+                    <Left style={{alignItems: 'center'}}>
+                      <Icon
+                        name="user-alt"
+                        style={{
+                          fontSize: 28,
+                          color: 'rgba(112,112,112,0.6)',
+                          marginRight: 10,
+                        }}
+                      />
+                      <Content>
+                        <Text style={styles.text}>{list.userName}</Text>
+                        <Text style={styles.email}>{list.email}</Text>
+                      </Content>
+                    </Left>
+
+                    <Right>
+                      <Text style={styles.bloodStyle}>
+                        {list.bloodGroup}
+                        {list.rhValue === 'neg' ? ' -' : ' +'}
+                      </Text>
+                    </Right>
+                  </ListItem>
+                ))}
+              </List>
+            </Content>
+          )}
         </Container>
 
         <Modal animationType="fade" transparent visible={modalState}>
@@ -200,7 +337,7 @@ export function DonorsListComp({user, navigation}) {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.userState.user,
+  search: state.searchState.search,
 });
 
 const styles = StyleSheet.create({
@@ -299,5 +436,5 @@ const styles = StyleSheet.create({
   },
 });
 
-let DonorsList = connect(mapStateToProps, null)(DonorsListComp);
+let DonorsList = connect(mapStateToProps, {changeSearchValue})(DonorsListComp);
 export {DonorsList};

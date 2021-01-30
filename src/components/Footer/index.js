@@ -13,11 +13,17 @@ import {StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
 import {logoutUser} from '../../redux/actions/authActions';
 import {bottomNavStateChange} from '../../redux/actions/navActions';
+import {changeSearchValue} from '../../redux/actions/searchActions';
 import {logoutSignInUser} from '../../middleware/queries/loadingUser';
 import Icon from 'react-native-vector-icons/dist/MaterialCommunityIcons';
 import IconF from 'react-native-vector-icons/dist/FontAwesome5';
 
-function FooterNavigation({navState, bottomNavStateChange, logoutUser}) {
+function FooterNavigation({
+  navState,
+  bottomNavStateChange,
+  logoutUser,
+  changeSearchValue,
+}) {
   let navigation = useNavigation();
   return (
     <Footer style={styles.footer}>
@@ -48,7 +54,7 @@ function FooterNavigation({navState, bottomNavStateChange, logoutUser}) {
           vertical
           onPress={() => {
             bottomNavStateChange(1);
-            navigation.navigate('donorProfile');
+            navigation.navigate('User Profile');
           }}>
           <IconF
             style={{
@@ -73,6 +79,7 @@ function FooterNavigation({navState, bottomNavStateChange, logoutUser}) {
             await logoutSignInUser();
             bottomNavStateChange(2);
             await navigation.navigate('Login');
+            changeSearchValue(null);
           }}>
           <Icon
             style={{
@@ -119,7 +126,9 @@ const mapStateToProps = (state) => ({
   navState: state.navState.active,
 });
 
-let FooterNav = connect(mapStateToProps, {bottomNavStateChange, logoutUser})(
-  FooterNavigation,
-);
+let FooterNav = connect(mapStateToProps, {
+  bottomNavStateChange,
+  logoutUser,
+  changeSearchValue,
+})(FooterNavigation);
 export {FooterNav};

@@ -19,8 +19,14 @@ import {
   loginSignupError,
   loginSignupUser,
 } from '../../redux/actions/authActions';
+import {bottomNavStateChange} from '../../redux/actions/navActions';
 
-function Login({navigation, loginSignupError, loginSignupUser}) {
+function Login({
+  navigation,
+  loginSignupError,
+  loginSignupUser,
+  bottomNavStateChange,
+}) {
   let [email, setEmail] = React.useState(null);
   let [password, setPassword] = React.useState(null);
 
@@ -50,6 +56,9 @@ function Login({navigation, loginSignupError, loginSignupUser}) {
 
       if (validationResult) {
         let response = await signInUser(email, password);
+
+        bottomNavStateChange(0);
+
         if (typeof response !== 'string') {
           await loginSignupUser(response);
           navigation.navigate('donorsList');
@@ -208,5 +217,9 @@ const styles = StyleSheet.create({
   },
 });
 
-let LoginScreen = connect(null, {loginSignupError, loginSignupUser})(Login);
+let LoginScreen = connect(null, {
+  loginSignupError,
+  loginSignupUser,
+  bottomNavStateChange,
+})(Login);
 export {LoginScreen};

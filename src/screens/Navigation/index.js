@@ -78,7 +78,7 @@ function Navigation({
                 component={DonorsList}
               />
               <Stack.Screen
-                name="donorProfile"
+                name="User Profile"
                 options={{
                   headerLeft: null,
                   cardStyleInterpolator:

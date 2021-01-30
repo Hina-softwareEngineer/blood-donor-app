@@ -1,53 +1,85 @@
 import * as React from 'react';
-import {
-  Container,
-  Content,
-  Form,
-  Item,
-  Input,
-  Label,
-  Button,
-  Text,
-  Toast,
-  Root,
-  Left,
-  Right,
-} from 'native-base';
-import {
-  Keyboard,
-  View,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import {Button, Text, Root} from 'native-base';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
+import {changeSearchValue} from '../../redux/actions/searchActions';
 
-export function SearchBtn({navigation}) {
+export function SearchScr({navigation, changeSearchValue}) {
   return (
     <Root>
       <View style={{backgroundColor: '#fff', flex: 1}}>
         <View style={styles.content}>
-          <Text style={styles.bloodGroups}>A+</Text>
-
-          <Text style={styles.bloodGroups}>A-</Text>
+          <TouchableOpacity
+            onPress={() => {
+              changeSearchValue('A+');
+              navigation.goBack();
+            }}>
+            <Text style={styles.bloodGroups}>A+</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              changeSearchValue('A-');
+              navigation.goBack();
+            }}>
+            <Text style={styles.bloodGroups}>A-</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.content}>
-          <Text style={styles.bloodGroups}>B+</Text>
-
-          <Text style={styles.bloodGroups}>B-</Text>
+          <TouchableOpacity
+            onPress={() => {
+              changeSearchValue('B+');
+              navigation.goBack();
+            }}>
+            <Text style={styles.bloodGroups}>B+</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              changeSearchValue('B-');
+              navigation.goBack();
+            }}>
+            <Text style={styles.bloodGroups}>B-</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.content}>
-          <Text style={styles.bloodGroups}>AB+</Text>
+          <TouchableOpacity
+            onPress={() => {
+              changeSearchValue('AB+');
+              navigation.goBack();
+            }}>
+            <Text style={styles.bloodGroups}>AB+</Text>
+          </TouchableOpacity>
 
-          <Text style={styles.bloodGroups}>AB-</Text>
+          <TouchableOpacity
+            onPress={() => {
+              changeSearchValue('AB-');
+              navigation.goBack();
+            }}>
+            <Text style={styles.bloodGroups}>AB-</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.content}>
-          <Text style={styles.bloodGroups}>O+</Text>
+          <TouchableOpacity
+            onPress={() => {
+              changeSearchValue('O+');
+              navigation.goBack();
+            }}>
+            <Text style={styles.bloodGroups}>O+</Text>
+          </TouchableOpacity>
 
-          <Text style={styles.bloodGroups}>O-</Text>
+          <TouchableOpacity
+            onPress={() => {
+              changeSearchValue('O-');
+              navigation.goBack();
+            }}>
+            <Text style={styles.bloodGroups}>O-</Text>
+          </TouchableOpacity>
         </View>
 
         <Button
+          onPress={() => {
+            changeSearchValue(null);
+            navigation.goBack();
+          }}
           primary
           style={{
             backgroundColor: '#de2c2c',
@@ -88,3 +120,6 @@ const styles = StyleSheet.create({
     elevation: 20,
   },
 });
+
+let SearchBtn = connect(null, {changeSearchValue})(SearchScr);
+export {SearchBtn};
