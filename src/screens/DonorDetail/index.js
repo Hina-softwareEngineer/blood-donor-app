@@ -77,9 +77,19 @@ export function BloodUserDetailsComp({user, navigation}) {
       if (diseases.length > 0 && available) {
         Toast.show({
           text: "If you have any disease, then you can't give blood.",
-          position: 'center',
+          position: 'top',
           type: 'warning',
           duration: 3000,
+          style: {
+            marginHorizontal: 10,
+            borderRadius: 3,
+            minHeight: 40,
+            shadowOffset: {
+              width: 10,
+              height: 3,
+            },
+            elevation: 6,
+          },
         });
       } else {
         let data = {
@@ -99,6 +109,16 @@ export function BloodUserDetailsComp({user, navigation}) {
               text: 'Successfully Updated.',
               position: 'top',
               type: 'success',
+              style: {
+                marginHorizontal: 10,
+                borderRadius: 3,
+                minHeight: 40,
+                shadowOffset: {
+                  width: 10,
+                  height: 3,
+                },
+                elevation: 6,
+              },
             });
           }
         } else {
@@ -109,6 +129,16 @@ export function BloodUserDetailsComp({user, navigation}) {
               text: 'Successfully Saved.',
               position: 'top',
               type: 'success',
+              style: {
+                marginHorizontal: 10,
+                borderRadius: 3,
+                minHeight: 40,
+                shadowOffset: {
+                  width: 10,
+                  height: 3,
+                },
+                elevation: 6,
+              },
             });
           }
         }
@@ -116,8 +146,18 @@ export function BloodUserDetailsComp({user, navigation}) {
     } else {
       Toast.show({
         text: 'Fill all the necessage fields first!',
-        position: 'center',
-        type: 'warning',
+        position: 'top',
+        type: 'danger',
+        style: {
+          marginHorizontal: 10,
+          borderRadius: 3,
+          minHeight: 40,
+          shadowOffset: {
+            width: 10,
+            height: 3,
+          },
+          elevation: 6,
+        },
       });
     }
   };

@@ -323,7 +323,7 @@ export function DonorsListComp({search, navigation, changeSearchValue}) {
                     width: 175,
                     color: 'rgba(0,0,0,0.7)',
                   }}>
-                  {oneUserData?.medicalDetails} hellow this is the way
+                  {oneUserData?.medicalDetails}
                 </Text>
               </Item>
             </View>

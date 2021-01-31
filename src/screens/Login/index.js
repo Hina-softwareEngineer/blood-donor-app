@@ -66,8 +66,18 @@ function Login({
           loginSignupError(response);
           Toast.show({
             text: response,
-            position: 'bottom',
+            position: 'top',
             type: 'danger',
+            style: {
+              marginHorizontal: 10,
+              borderRadius: 3,
+              minHeight: 40,
+              shadowOffset: {
+                width: 10,
+                height: 3,
+              },
+              elevation: 6,
+            },
           });
         }
       }
@@ -76,6 +86,16 @@ function Login({
         text: 'Fill all the fields first!',
         position: 'top',
         type: 'danger',
+        style: {
+          marginHorizontal: 10,
+          borderRadius: 3,
+          minHeight: 40,
+          shadowOffset: {
+            width: 10,
+            height: 3,
+          },
+          elevation: 6,
+        },
       });
     }
   };
