@@ -37,20 +37,22 @@ export function DonorsListComp({search, navigation, changeSearchValue}) {
   let [spinner, setSpinner] = React.useState(true);
 
   React.useEffect(() => {
-    async function getDonorsData() {
-      let response = await getAllDonors();
-      if (response) {
-        setUsersList(response);
-        setDataAccordingToSearchValue(response);
-      }
-      setSpinner(false);
-    }
     getDonorsData();
   }, []);
 
   React.useEffect(() => {
+    getDonorsData();
     setDataAccordingToSearchValue();
   }, [search]);
+
+  async function getDonorsData() {
+    let response = await getAllDonors();
+    if (response) {
+      setUsersList(response);
+      setDataAccordingToSearchValue(response);
+    }
+    setSpinner(false);
+  }
 
   function setDataAccordingToSearchValue(response) {
     let filterData;
