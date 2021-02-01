@@ -3,14 +3,12 @@ import {
   Container,
   Content,
   Form,
-  Item,
   Input,
   Label,
   Button,
   Text,
   Toast,
   Root,
-  Header,
   ListItem,
   Radio,
   Right,
@@ -36,8 +34,8 @@ export function BloodUserDetailsComp({user, navigation}) {
   let [address, setAddress] = React.useState(null);
   let [home_phone, setHomePhone] = React.useState(null);
   let [diseases, setDiseases] = React.useState([]);
-  let [blood_group, setBloodGroup] = React.useState('A');
-  let [rh_factor, setRhFactor] = React.useState('pos');
+  let [blood_group, setBloodGroup] = React.useState(null);
+  let [rh_factor, setRhFactor] = React.useState(null);
   let [medical, setMedical] = React.useState(null);
 
   let [userProfileId, setUserProfileId] = React.useState(null);
@@ -45,28 +43,30 @@ export function BloodUserDetailsComp({user, navigation}) {
 
   React.useEffect(() => {
     async function subFunction() {
-      let userProfileid = await getUserMedicalData(user?.uid);
-      if (
-        userProfileid &&
-        typeof userProfileid === 'object' &&
-        Object.keys(userProfileid).length > 0
-      ) {
-        let id = Object.keys(userProfileid)[0];
-        setAddress(userProfileid[id]['address']);
-        setBloodGroup(userProfileid[id]['bloodGroup']);
-        setRhFactor(userProfileid[id]['rhValue']);
-        if (userProfileid[id]['diseases'][0] !== 'none') {
-          setDiseases(userProfileid[id]['diseases']);
+      if (user) {
+        let userProfileid = await getUserMedicalData(user?.uid);
+        if (
+          userProfileid &&
+          typeof userProfileid === 'object' &&
+          Object.keys(userProfileid).length > 0
+        ) {
+          let id = Object.keys(userProfileid)[0];
+          setAddress(userProfileid[id]['address']);
+          setBloodGroup(userProfileid[id]['bloodGroup']);
+          setRhFactor(userProfileid[id]['rhValue']);
+          if (userProfileid[id]['diseases'][0] !== 'none') {
+            setDiseases(userProfileid[id]['diseases']);
+          }
+          setHomePhone(userProfileid[id]['homePhone']);
+          setAvailable(userProfileid[id]['isAvailable']);
+          setMedical(userProfileid[id]['medicalDetails']);
+          setUserProfileId(id);
         }
-        setHomePhone(userProfileid[id]['homePhone']);
-        setAvailable(userProfileid[id]['isAvailable']);
-        setMedical(userProfileid[id]['medicalDetails']);
-        setUserProfileId(id);
+        let userDetail = await getUser(user?.uid);
+        userDetail = userDetail[user?.uid];
+        navigation.setOptions({title: userDetail.userName});
+        setSpinner(false);
       }
-      let userDetail = await getUser(user?.uid);
-      userDetail = userDetail[user?.uid];
-      navigation.setOptions({title: userDetail.userName});
-      setSpinner(false);
     }
     subFunction();
   }, []);
@@ -366,7 +366,9 @@ export function BloodUserDetailsComp({user, navigation}) {
                   })
                 }>
                 <Label style={styles.label}>Rh Factor (e.g AB+ , O-)</Label>
-                <ListItem style={{marginLeft: 0}}>
+                <ListItem
+                  style={{marginLeft: 0}}
+                  onPress={() => setRhFactor('pos')}>
                   <Left>
                     <Text style={styles.textColor}>Positive</Text>
                   </Left>
@@ -375,11 +377,12 @@ export function BloodUserDetailsComp({user, navigation}) {
                       selectedColor="#de2c2c"
                       color={'rgba(112,112,112,0.7)'}
                       selected={rh_factor === 'pos'}
-                      onPres={() => setRhFactor('pos')}
                     />
                   </Right>
                 </ListItem>
-                <ListItem style={{marginLeft: 0}}>
+                <ListItem
+                  style={{marginLeft: 0}}
+                  onPress={() => setRhFactor('neg')}>
                   <Left>
                     <Text style={styles.textColor}>Negative</Text>
                   </Left>
@@ -388,7 +391,6 @@ export function BloodUserDetailsComp({user, navigation}) {
                       selectedColor="#de2c2c"
                       color={'rgba(112,112,112,0.7)'}
                       selected={rh_factor === 'neg'}
-                      onPress={() => setRhFactor('neg')}
                     />
                   </Right>
                 </ListItem>

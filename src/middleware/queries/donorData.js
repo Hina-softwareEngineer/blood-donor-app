@@ -52,21 +52,22 @@ export const getAllDonors = async () => {
     .once('value')
     .then(async (res) => {
       let values = res.val();
-      let keys = Object.keys(values);
       let dataArray = [];
-      if (keys) {
-        let allUsers = await database()
-          .ref('/users')
-          .once('value')
-          .then((resp) => {
-            return resp.val();
+      if (values) {
+        let keys = Object.keys(values);
+        if (keys) {
+          let allUsers = await database()
+            .ref('/users')
+            .once('value')
+            .then((resp) => {
+              return resp.val();
+            });
+
+          keys.forEach(async (k) => {
+            dataArray.push({...values[k], ...allUsers[values[k]['userId']]});
           });
-
-        keys.forEach(async (k) => {
-          dataArray.push({...values[k], ...allUsers[values[k]['userId']]});
-        });
+        }
       }
-
       return dataArray;
     })
     .catch((err) => err);
@@ -85,7 +86,6 @@ export const getUser = async (userId) => {
         return resp.val();
       });
     return user;
-    console.log(user);
   }
   return null;
 };

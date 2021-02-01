@@ -56,16 +56,15 @@ function Login({
 
       if (validationResult) {
         let response = await signInUser(email, password);
-
         bottomNavStateChange(0);
 
-        if (typeof response !== 'string') {
+        if (response && typeof response !== 'string') {
           await loginSignupUser(response);
           navigation.navigate('donorsList');
         } else {
           loginSignupError(response);
           Toast.show({
-            text: response,
+            text: response || 'Network Error',
             position: 'top',
             type: 'danger',
             style: {

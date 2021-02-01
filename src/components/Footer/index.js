@@ -77,7 +77,7 @@ function FooterNavigation({
           onPress={async () => {
             await logoutUser();
             await logoutSignInUser();
-            bottomNavStateChange(2);
+            await bottomNavStateChange(2);
             await navigation.navigate('Login');
             changeSearchValue(null);
           }}>

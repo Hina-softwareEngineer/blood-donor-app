@@ -28,20 +28,34 @@ import {FooterNav} from '../../components/Footer';
 import {getAllDonors} from '../../middleware/queries/donorData';
 import {changeSearchValue} from '../../redux/actions/searchActions';
 import {SpinnerLoader} from '../../components/Spinner';
+import {useIsFocused} from '@react-navigation/native';
 
-export function DonorsListComp({search, navigation, changeSearchValue}) {
+export function DonorsListComp({
+  search,
+  navigation,
+  changeSearchValue,
+  navState,
+}) {
   let [usersList, setUsersList] = React.useState([]);
   let [modalState, setModalState] = React.useState(false);
   let [oneUserData, setOneUserData] = React.useState(null);
   let [searchedData, setSearchedData] = React.useState([]);
   let [spinner, setSpinner] = React.useState(true);
 
-  React.useEffect(() => {
-    getDonorsData();
-  }, []);
+  const isFocused = useIsFocused();
+  console.log('is focused---->', isFocused, navState);
 
   React.useEffect(() => {
+    // let screenFocused = navigation.addListener('focus', async () => {
+    console.log('focus start 2');
     getDonorsData();
+    console.log('-effect 1- search , must run on new screen 6', search);
+    // });
+    // return screenFocused;
+  }, [navState]);
+
+  React.useEffect(() => {
+    console.log('search value u', search);
     setDataAccordingToSearchValue();
   }, [search]);
 
@@ -55,6 +69,8 @@ export function DonorsListComp({search, navigation, changeSearchValue}) {
   }
 
   function setDataAccordingToSearchValue(response) {
+    // console.log('--userlist--', usersList);
+    // console.log('--response--', response);
     let filterData;
     switch (search) {
       case 'A+': {
@@ -142,6 +158,7 @@ export function DonorsListComp({search, navigation, changeSearchValue}) {
         filterData = response || usersList;
       }
     }
+    // console.log('ffffffffffffffffffffffff', filterData);
     setSearchedData(filterData);
   }
 
@@ -195,7 +212,7 @@ export function DonorsListComp({search, navigation, changeSearchValue}) {
                     </Text>
                   </ListItem>
                 ) : null}
-                {searchedData?.length > 0 && search ? (
+                {search && searchedData?.length > 0 ? (
                   <Text
                     style={{
                       marginTop: 5,
@@ -340,6 +357,7 @@ export function DonorsListComp({search, navigation, changeSearchValue}) {
 
 const mapStateToProps = (state) => ({
   search: state.searchState.search,
+  navState: state.navState.active,
 });
 
 const styles = StyleSheet.create({

@@ -73,7 +73,7 @@ function SignUpScr({navigation, loginSignupUser, loginSignupError}) {
         } else {
           loginSignupError(response);
           Toast.show({
-            text: response,
+            text: response || 'Network Error',
             position: 'top',
             type: 'danger',
             style: {
