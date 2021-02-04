@@ -42,21 +42,15 @@ export function DonorsListComp({
   let [searchedData, setSearchedData] = React.useState([]);
   let [spinner, setSpinner] = React.useState(true);
 
-  const isFocused = useIsFocused();
-  console.log('is focused---->', isFocused, navState);
-
   React.useEffect(() => {
-    // let screenFocused = navigation.addListener('focus', async () => {
-    console.log('focus start 2');
     getDonorsData();
-    console.log('-effect 1- search , must run on new screen 6', search);
-    // });
-    // return screenFocused;
   }, [navState]);
 
   React.useEffect(() => {
-    console.log('search value u', search);
-    setDataAccordingToSearchValue();
+    if (navState === 2) {
+    } else {
+      setDataAccordingToSearchValue();
+    }
   }, [search]);
 
   async function getDonorsData() {
@@ -69,8 +63,6 @@ export function DonorsListComp({
   }
 
   function setDataAccordingToSearchValue(response) {
-    // console.log('--userlist--', usersList);
-    // console.log('--response--', response);
     let filterData;
     switch (search) {
       case 'A+': {
@@ -158,7 +150,6 @@ export function DonorsListComp({
         filterData = response || usersList;
       }
     }
-    // console.log('ffffffffffffffffffffffff', filterData);
     setSearchedData(filterData);
   }
 
